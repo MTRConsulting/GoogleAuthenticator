@@ -1,0 +1,162 @@
+
+
+# 1. add Google Authenticator PAM module to Ubuntu
+sudo apt-get install libpam-google-authenticator
+
+# log into the user you want to two-factor authenticate
+google-authenticator
+
+
+Last login: Tue Jun 20 19:41:07 2017
+michael@majesticubuntuLTS:~$ google-authenticator
+login as: michael
+michael@192.168.1.48's password:
+Welcome to Ubuntu 16.04.2 LTS (GNU/Linux 4.4.0-62-generic i686)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+97 packages can be updated.
+46 updates are security updates.
+
+
+Last login: Tue Jun 20 19:41:46 2017 from 192.168.1.210
+michael@majesticubuntuLTS:~$ google-authenticator
+
+Do you want authentication tokens to be time-based (y/n) y
+https://www.google.com/chart?chs=200x200&chld=M|0&cht=qr&chl=otpauth://totp/michael@majesticubuntuLTS%3Fsecret%3DWQJNB2KO73LGEMHG
+
+Your new secret key is: WQJNB2KO73LGEMHG
+Your verification code is 603582
+Your emergency scratch codes are:
+  66417757
+  11260147
+  77192143
+  29447140
+  96983340
+
+Do you want me to update your "/home/michael/.google_authenticator" file (y/n)
+
+login as: michael
+michael@192.168.1.48's password:
+Welcome to Ubuntu 16.04.2 LTS (GNU/Linux 4.4.0-62-generic i686)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+97 packages can be updated.
+46 updates are security updates.
+
+
+Last login: Tue Jun 20 19:41:46 2017 from 192.168.1.210
+michael@majesticubuntuLTS:~$ google-authenticator
+
+Do you want authentication tokens to be time-based (y/n) y
+https://www.google.com/chart?chs=200x200&chld=M|0&cht=qr&chl=otpauth://totp/michael@majesticubuntuLTS%3Fsecret%3DWQJNB2KO73LGEMHG
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Your new secret key is: WQJNB2KO73LGEMHG
+Your verification code is 603582
+Your emergency scratch codes are:
+  66417757
+  11260147
+  77192143
+  29447140
+  96983340
+
+Do you want me to update your "/home/michael/.google_authenticator" file (y/n) y
+
+Do you want to disallow multiple uses of the same authentication
+token? This restricts you to one login about every 30s, but it increases
+your chances to notice or even prevent man-in-the-middle attacks (y/n) y
+
+By default, tokens are good for 30 seconds and in order to compensate for
+possible time-skew between the client and the server, we allow an extra
+token before and after the current time. If you experience problems with poor
+time synchronization, you can increase the window from its default
+size of 1:30min to about 4min. Do you want to do so (y/n) n
+
+If the computer that you are logging into isn't hardened against brute-force
+login attempts, you can enable rate-limiting for the authentication module.
+By default, this limits attackers to no more than 3 login attempts every 30s.
+Do you want to enable rate-limiting (y/n) y
+michael@majesticubuntuLTS:~$
+
+
+# edit the login process to use the authenticator 
+sudo nano /etc/pam.d/common-auth
+
+# add the following line to the bottom of the file
+auth    required                        pam_google_authenticator.so nullok
+
+# once the system has been tested and all accounts are now running two-factor authentication
+# remove the 'nullok' option - it provides for accounts which do not have a google authenticator 
+# token established
+
+
+######
+#For SSH - Two-factor authentication
+
+# edit the following file for the ssd daemon
+sudo nano /etc/pam.d/sshd
+
+# add the following line
+ auth required pam_google_authenticator.so nullok
+ 
+# open the ssh config file and add the following line
+sudo nano /etc/ssh/sshd_config 
+
+ChallengeResponseAuthentication yes
+
+
+# restart the ssh service
+sudo service ssh restart
+
+
+#ISSUE - solve issue with putty connecting via SSH to remote server
+
+
+
+
+
